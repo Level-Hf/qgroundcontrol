@@ -100,6 +100,37 @@ Item {
                         Layout.fillHeight:  true
                         visible:            _activeVehicle
                     }
+
+                    // HF Flight State Widget
+                    Rectangle {
+                        Layout.fillHeight:  true
+                        width:              hfStateLabel.width + ScreenTools.defaultFontPixelWidth * 2
+                        color:              {
+                            if (!_activeVehicle) return qgcPal.buttonHighlight
+                            switch (_activeVehicle.hfFlightState) {
+                                case "Init": return "#95a5a6" // Gray
+                                case "Landed": return "#7f8c8d" // Dark Gray
+                                case "Accelerate": return "#f39c12" // Light Orange
+                                case "Ascent": return "#3498db" // Blue
+                                case "Flying": return "#2ecc71" // Green
+                                case "Descent": return "#f1c40f" // Yellow
+                                case "Decelerate": return "#e67e22" // Orange
+                                case "Taxi": return "#9b59b6" // Purple
+                                case "Manual": return "#e74c3c" // Red
+                                default: return qgcPal.buttonHighlight
+                            }
+                        }
+                        radius:             ScreenTools.defaultBorderRadius
+                        visible:            _activeVehicle
+
+                        QGCLabel {
+                            id:                     hfStateLabel
+                            anchors.centerIn:       parent
+                            color:                  "white"
+                            font.pointSize:         ScreenTools.mediumFontPointSize
+                            text:                   _activeVehicle ? _activeVehicle.hfFlightState : "Unknown"
+                        }
+                    }
                 }
             }
             Item {

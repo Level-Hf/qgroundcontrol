@@ -151,6 +151,7 @@ public:
     Q_PROPERTY(bool                 flightModeSetAvailable      READ flightModeSetAvailable                                         CONSTANT)
     Q_PROPERTY(QStringList          flightModes                 READ flightModes                                                    NOTIFY flightModesChanged)
     Q_PROPERTY(QString              flightMode                  READ flightMode                 WRITE setFlightMode                 NOTIFY flightModeChanged)
+    Q_PROPERTY(QString              hfFlightState               READ hfFlightState                                                  NOTIFY hfFlightStateChanged)
     Q_PROPERTY(TrajectoryPoints*    trajectoryPoints            MEMBER _trajectoryPoints                                            CONSTANT)
     Q_PROPERTY(QmlObjectListModel*  cameraTriggerPoints         READ cameraTriggerPoints                                            CONSTANT)
     Q_PROPERTY(float                latitude                    READ latitude                                                       NOTIFY coordinateChanged)
@@ -454,6 +455,7 @@ public:
     QStringList flightModes                 ();
     QString flightMode                      () const;
     void setFlightMode                      (const QString& flightMode);
+    QString hfFlightState                   () const { return _hfFlightState; }
 
     bool airship() const;
 
@@ -743,6 +745,7 @@ signals:
     void armedPositionChanged();
     void armedChanged                   (bool armed);
     void flightModeChanged              (const QString& flightMode);
+    void hfFlightStateChanged           (QString hfFlightState);
     void flyingChanged                  (bool flying);
     void landingChanged                 (bool landing);
     void guidedModeChanged              (bool guidedMode);
@@ -862,6 +865,7 @@ private:
     void _handleHighLatency             (mavlink_message_t& message);
     void _handleHighLatency2            (mavlink_message_t& message);
     void _handleOrbitExecutionStatus    (const mavlink_message_t& message);
+    void _handleNamedValueInt           (const mavlink_message_t& message);
     void _handleGimbalOrientation       (const mavlink_message_t& message);
     void _handleObstacleDistance        (const mavlink_message_t& message);
     void _handleFenceStatus             (const mavlink_message_t& message);
@@ -952,6 +956,7 @@ private:
 
 
     QString             _prearmError;
+    QString             _hfFlightState = "Unknown";
     QTimer              _prearmErrorTimer;
     static const int    _prearmErrorTimeoutMSecs = 35 * 1000;   ///< Take away prearm error after 35 seconds
 

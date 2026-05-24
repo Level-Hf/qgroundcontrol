@@ -195,6 +195,7 @@ QGCMAVLink::VehicleClass_t QGCMAVLink::vehicleClass(MAV_TYPE mavType)
     switch (mavType) {
     case MAV_TYPE_GROUND_ROVER:
     case MAV_TYPE_SURFACE_BOAT:
+    case static_cast<MAV_TYPE>(50): // MAV_TYPE_HYDROFOIL custom airframe
         return VehicleClassRoverBoat;
     case MAV_TYPE_SUBMARINE:
         return VehicleClassSub;
@@ -392,6 +393,7 @@ QString QGCMAVLink::mavTypeToString(MAV_TYPE mavType) {
     case MAV_TYPE_ROCKET:                       return QCoreApplication::translate("MAV_TYPE", "Rocket");
     case MAV_TYPE_GROUND_ROVER:                 return QCoreApplication::translate("MAV_TYPE", "Ground rover");
     case MAV_TYPE_SURFACE_BOAT:                 return QCoreApplication::translate("MAV_TYPE", "Surface vessel, boat, ship");
+    case static_cast<MAV_TYPE>(50):             return QCoreApplication::translate("MAV_TYPE", "Hydrofoil");
     case MAV_TYPE_SUBMARINE:                    return QCoreApplication::translate("MAV_TYPE", "Submarine");
     case MAV_TYPE_SPACECRAFT_ORBITER:           return QCoreApplication::translate("MAV_TYPE", "Spacecraft, orbiter");
     case MAV_TYPE_HEXAROTOR:                    return QCoreApplication::translate("MAV_TYPE", "Hexarotor");

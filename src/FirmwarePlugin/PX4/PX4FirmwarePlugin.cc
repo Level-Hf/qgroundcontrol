@@ -25,10 +25,10 @@ PX4FirmwarePluginInstanceData::PX4FirmwarePluginInstanceData(QObject* parent)
 PX4FirmwarePlugin::PX4FirmwarePlugin()
 {
     const QString manualFlightModeName = tr("Manual");
-    const QString acroFlightModeName = tr("Acro");
-    const QString stabilizedFlightModeName = tr("Stabilized");
+    const QString acroFlightModeName = tr("COG Stabilized");
+    const QString stabilizedFlightModeName = tr("Stabilised");
     const QString rattitudeFlightModeName = tr("Rattitude");
-    const QString altCtlFlightModeName = tr("Altitude");
+    const QString altCtlFlightModeName = tr("Static Flaps");
     const QString posCtlFlightModeName = tr("Position");
     const QString offboardFlightModeName = tr("Offboard");
     const QString readyFlightModeName = tr("Ready");
@@ -68,20 +68,7 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         { manualFlightModeName,     PX4CustomMode::MANUAL,          true,   true },
         { stabilizedFlightModeName, PX4CustomMode::STABILIZED,      true,   true },
         { acroFlightModeName,       PX4CustomMode::ACRO,            true,   true },
-        { rattitudeFlightModeName,  PX4CustomMode::RATTITUDE,       true,   false},
-        { altCtlFlightModeName,     PX4CustomMode::ALTCTL,          true,   false},
-        { offboardFlightModeName,   PX4CustomMode::OFFBOARD,        true,   true },
-        { simpleFlightModeName,     PX4CustomMode::SIMPLE,          false,  false},
-        { posCtlFlightModeName,     PX4CustomMode::POSCTL_POSCTL,   true,   false},
-        { orbitFlightModeName,      PX4CustomMode::POSCTL_ORBIT,    false,  true },
-        { holdFlightModeName,       PX4CustomMode::AUTO_LOITER,     true,   true },
         { missionFlightModeName,    PX4CustomMode::AUTO_MISSION,    true,   true },
-        { rtlFlightModeName,        PX4CustomMode::AUTO_RTL,        true,   true },
-        { landingFlightModeName,    PX4CustomMode::AUTO_LAND,       false,  true },
-        { preclandFlightModeName,   PX4CustomMode::AUTO_PRECLAND,   true,   true },
-        { readyFlightModeName,      PX4CustomMode::AUTO_READY,      false,  false},
-        { rtgsFlightModeName,       PX4CustomMode::AUTO_RTGS,       false,  false},
-        { takeoffFlightModeName,    PX4CustomMode::AUTO_TAKEOFF,    false,  false},
     };
 
     updateAvailableFlightModes(availableFlightModes);
