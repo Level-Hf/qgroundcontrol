@@ -109,6 +109,7 @@ Item {
                             if (!_activeVehicle) return qgcPal.buttonHighlight
                             switch (_activeVehicle.hfFlightState) {
                                 case "Init": return "#95a5a6" // Gray
+                                case "Wait For Connect": return "#bdc3c7" // Silver
                                 case "Landed": return "#7f8c8d" // Dark Gray
                                 case "Accelerate": return "#f39c12" // Light Orange
                                 case "Ascent": return "#3498db" // Blue
