@@ -61,6 +61,12 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         { PX4CustomMode::AUTO_READY,    readyFlightModeName       },
         { PX4CustomMode::AUTO_RTGS,     rtgsFlightModeName        },
         { PX4CustomMode::AUTO_TAKEOFF,  takeoffFlightModeName     },
+        { PX4CustomMode::LCS_MANUAL,    "Manual LCS"              },
+        { PX4CustomMode::LCS_STAB,      "Stab LCS"                },
+        { PX4CustomMode::MCS_MANUAL,    "Manual MCS"              },
+        { PX4CustomMode::MCS_STAB,      "Stab MCS"                },
+        { PX4CustomMode::HUMAN_STAB,    "Stab Human On Board"     },
+        { PX4CustomMode::HUMAN_COG,     "COG Stab Human On Board" },
     });
 
     static FlightModeList availableFlightModes = {
@@ -69,6 +75,12 @@ PX4FirmwarePlugin::PX4FirmwarePlugin()
         { stabilizedFlightModeName, PX4CustomMode::STABILIZED,      true,   true },
         { acroFlightModeName,       PX4CustomMode::ACRO,            true,   true },
         { missionFlightModeName,    PX4CustomMode::AUTO_MISSION,    true,   true },
+        { "Manual LCS",             PX4CustomMode::LCS_MANUAL,      true,   false },
+        { "Stab LCS",               PX4CustomMode::LCS_STAB,        true,   false },
+        { "Manual MCS",             PX4CustomMode::MCS_MANUAL,      true,   false },
+        { "Stab MCS",               PX4CustomMode::MCS_STAB,        true,   false },
+        { "Stab Human On Board",    PX4CustomMode::HUMAN_STAB,      true,   false },
+        { "COG Stab Human On Board",PX4CustomMode::HUMAN_COG,       true,   false },
     };
 
     updateAvailableFlightModes(availableFlightModes);
@@ -86,9 +98,19 @@ AutoPilotPlugin* PX4FirmwarePlugin::autopilotPlugin(Vehicle* vehicle) const
 QStringList PX4FirmwarePlugin::flightModes(Vehicle* vehicle) const
 {
     QStringList flightModesList;
+    
+    bool hasHumanHardware = false;
+    if (vehicle->parameterManager()->parameterExists(ParameterManager::defaultComponentId, "HF_HAS_HUMAN_HW")) {
+        hasHumanHardware = vehicle->parameterManager()->getParameter(ParameterManager::defaultComponentId, "HF_HAS_HUMAN_HW")->rawValue().toInt() == 1;
+    }
 
     for (auto &mode : _flightModeList) {
         if (mode.canBeSet){
+            // Skip human modes if hardware is not present
+            if (!hasHumanHardware && (mode.mode_name == "Stab Human On Board" || mode.mode_name == "COG Stab Human On Board")) {
+                continue;
+            }
+
             bool fw = (vehicle->fixedWing() && mode.fixedWing);
             bool mc = (vehicle->multiRotor() && mode.multiRotor);
 
@@ -746,6 +768,12 @@ void PX4FirmwarePlugin::updateAvailableFlightModes(FlightModeList &modeList)
         case PX4CustomMode::AUTO_READY        :
         case PX4CustomMode::AUTO_RTGS         :
         case PX4CustomMode::AUTO_TAKEOFF      :
+        case PX4CustomMode::LCS_MANUAL        :
+        case PX4CustomMode::LCS_STAB          :
+        case PX4CustomMode::MCS_MANUAL        :
+        case PX4CustomMode::MCS_STAB          :
+        case PX4CustomMode::HUMAN_STAB        :
+        case PX4CustomMode::HUMAN_COG         :
             mode.multiRotor = true;
             break;
         case PX4CustomMode::POSCTL_ORBIT      :
@@ -775,6 +803,12 @@ void PX4FirmwarePlugin::updateAvailableFlightModes(FlightModeList &modeList)
         case PX4CustomMode::AUTO_READY        :
         case PX4CustomMode::AUTO_RTGS         :
         case PX4CustomMode::AUTO_TAKEOFF      :
+        case PX4CustomMode::LCS_MANUAL        :
+        case PX4CustomMode::LCS_STAB          :
+        case PX4CustomMode::MCS_MANUAL        :
+        case PX4CustomMode::MCS_STAB          :
+        case PX4CustomMode::HUMAN_STAB        :
+        case PX4CustomMode::HUMAN_COG         :
             mode.fixedWing = true;
             break;
         }

@@ -1492,23 +1492,12 @@ bool Vehicle::flightModeSetAvailable()
 
 QStringList Vehicle::flightModes()
 {
-    if (vehicleType() == 50) { // MAV_TYPE_HYDROFOIL
-        return QStringList { "Manual", "Manual Static Flaps", "Stabilised", "COG Stabilized", "Mission" };
-    }
     QStringList flightModes = _firmwarePlugin->flightModes(this);
     return flightModes;
 }
 
 QString Vehicle::flightMode() const
 {
-    if (vehicleType() == 50) { // MAV_TYPE_HYDROFOIL
-        // Try to map the base/custom mode back to hydrofoil names if the firmware reports them via standard means
-        QString mode = _firmwarePlugin->flightMode(_base_mode, _custom_mode);
-        if (mode == "Acro") return "COG Stabilized";
-        if (mode == "Stabilized") return "Stabilised";
-        // The rest are usually identical
-        return mode;
-    }
     return _firmwarePlugin->flightMode(_base_mode, _custom_mode);
 }
 
@@ -1521,23 +1510,6 @@ void Vehicle::setFlightMode(const QString& flightMode)
 {
     uint8_t     base_mode;
     uint32_t    custom_mode;
-
-    if (vehicleType() == 50) { // MAV_TYPE_HYDROFOIL
-        int hf_mode = 0;
-        if (flightMode == "Manual") hf_mode = 1;
-        else if (flightMode == "Manual Static Flaps") hf_mode = 2;
-        else if (flightMode == "Stabilised") hf_mode = 3;
-        else if (flightMode == "COG Stabilized") hf_mode = 4;
-        // For "Mission", we will fall through to standard PX4 custom mode handling unless specified otherwise.
-
-        if (hf_mode > 0) {
-            sendMavCommand(defaultComponentId(),
-                           static_cast<MAV_CMD>(51001), // VEHICLE_CMD_SET_HF_CONTROL_MODE
-                           true,  // show error if fails
-                           hf_mode);
-            return;
-        }
-    }
 
     if (setFlightModeCustom(flightMode, &base_mode, &custom_mode)) {
         SharedLinkInterfacePtr sharedLink = vehicleLinkManager()->primaryLink().lock();
